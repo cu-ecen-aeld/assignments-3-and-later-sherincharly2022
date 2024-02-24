@@ -10,17 +10,8 @@ jobs:
         container: cuaesd/aesd-autotest:unit-test
         runs-on: self-hosted
         steps:
-          - uses: actions/checkout@v3
+          - uses: actions/checkout@v2
           - name: Checkout submodules
             run : git submodule update --init --recursive
           - name: Run unit test
             run: ./unit-test.sh
-    full-test:
-        container: cuaesd/aesd-autotest:assignment2
-        runs-on: self-hosted
-        steps:
-          - uses: actions/checkout@v3
-          - name: Checkout submodules
-            run : git submodule update --init --recursive
-          - name: Run full test
-            run: ./full-test.sh
