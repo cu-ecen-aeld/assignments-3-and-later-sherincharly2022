@@ -1,7 +1,7 @@
 TARGET = writer
 
 all:
-	$(CROSS_COMPILER)gcc writer.c -o $(TARGET)
+	$(CROSS_COMPILE)gcc writer.c -o $(TARGET)
 
 clean:
 	rm -rf $(TARGET) *.o
