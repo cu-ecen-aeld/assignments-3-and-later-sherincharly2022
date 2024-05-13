@@ -1,0 +1,14 @@
+case "$1" in
+	start)
+		echo "starting the aesd embedded socket server"
+		start-stop-daemon -S -n aesdsocket -a /usr/bin/aesdsocket -- -d
+		;;
+	stop)
+		echo "Stopping the aesd embedded socket server"
+		start-stop-daemon -K -n aesdsocket
+		;;
+	*)
+		echo "Usage: $0 {start|stop}"
+
+	exit 1
+esac
