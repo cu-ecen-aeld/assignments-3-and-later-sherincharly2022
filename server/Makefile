@@ -1,9 +1,10 @@
 TARGET=aesdsocket
 
-GCC ?= gcc 
+CC ?= gcc 
+TARGET_LDFLAGS ?= -pthread -lrt
 
 all:
-	$(GCC) -g -o $(TARGET) $(TARGET).c -Wall -Werror -lpthread -lrt
+	$(CC) -g -o $(TARGET) $(TARGET).c -Wall -Werror $(TARGET_LDFLAGS)
 
 clean:
 	rm -f $(TARGET) *.o
