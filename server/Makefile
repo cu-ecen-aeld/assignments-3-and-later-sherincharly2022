@@ -4,7 +4,7 @@ CC ?= gcc
 TARGET_LDFLAGS ?= -pthread -lrt
 
 all:
-	$(CC) -g -o $(TARGET) $(TARGET).c $(CLAGS) $(TARGET_LDFLAGS)
+	$(CC) $(CLAGS) -o $(TARGET) $(TARGET).c $(TARGET_LDFLAGS)
 
 clean:
 	rm -f $(TARGET) *.o
