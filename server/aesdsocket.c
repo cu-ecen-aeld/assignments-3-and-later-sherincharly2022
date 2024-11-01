@@ -78,29 +78,32 @@ void* thread_func(void *args)
 		if (c == '\n' || (j == sizeof(buffer)-1))
 		{
 			j = 0;
+			char *file_buffer = NULL;
+			long size_of_file = 0;
 
 			pthread_mutex_lock(&mutex);
 			if ((fp = fopen("/var/tmp/aesdsocketdata", "a+")) != NULL)
 			{
 				fwrite(buffer, 1, strlen((char *)buffer), fp); 
+
 				if (c == '\n')
 				{
-					long size_of_file = ftell(fp);
+					size_of_file = ftell(fp);
 					printf("size of file: %ld\n", size_of_file);
-					char *file_buffer = calloc( 1, size_of_file + 1);
-					if (file_buffer)
-					{
+					if((file_buffer = calloc( 1, size_of_file + 1)) != NULL) {
 						rewind(fp);
-						if (fread(file_buffer, 1, size_of_file, fp))
-						{
-							send(thread_node->td.client_fd, file_buffer, size_of_file, 0);
-						}
-						free(file_buffer);
+						fread(file_buffer, 1, size_of_file, fp);
 					}
 				}
 				fclose(fp);
 			}
 			pthread_mutex_unlock(&mutex);
+
+			if (file_buffer)
+			{
+				send(thread_node->td.client_fd, file_buffer, size_of_file, 0);
+				free(file_buffer);
+			}
 		}
 	}
 
