@@ -97,13 +97,13 @@ void* thread_func(void *args)
 				}
 				fclose(fp);
 			}
-			pthread_mutex_unlock(&mutex);
-
 			if (file_buffer)
 			{
 				send(thread_node->td.client_fd, file_buffer, size_of_file, 0);
 				free(file_buffer);
 			}
+			pthread_mutex_unlock(&mutex);
+
 		}
 	}
 
