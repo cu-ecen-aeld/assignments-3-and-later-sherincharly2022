@@ -12,11 +12,6 @@ jobs:
         container: cuaesd/aesd-autotest:24-unit-test
         runs-on: self-hosted
         steps:
-          - uses: actions/checkout@v2
-
-          - name: Checkout submodules
-            run: git submodule update --init --recursive
-
           - name: Upload Root CA Certificate
             uses: actions/upload-artifact@v4
             with:
@@ -37,6 +32,12 @@ jobs:
           - name: Verify Certificate Installation
             run: |
               ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+
+          - uses: actions/checkout@v2
+
+          - name: Checkout submodules
+            run: git submodule update --init --recursive
+
 
           - name: Run unit test
             run: ./unit-test.sh
@@ -45,11 +46,6 @@ jobs:
         container: cuaesd/aesd-autotest:24-assignment7
         runs-on: self-hosted
         steps:
-          - uses: actions/checkout@v2
-
-          - name: Checkout submodules
-            run: git submodule update --init --recursive
-
           - name: Upload Root CA Certificate
             uses: actions/upload-artifact@v4
             with:
@@ -70,6 +66,11 @@ jobs:
           - name: Verify Certificate Installation
             run: |
               ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+
+          - uses: actions/checkout@v2
+
+          - name: Checkout submodules
+            run: git submodule update --init --recursive
 
           - name: Run full test
             run: ./full-test.sh
