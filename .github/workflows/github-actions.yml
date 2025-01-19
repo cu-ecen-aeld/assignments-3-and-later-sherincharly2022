@@ -12,7 +12,7 @@ jobs:
     container: 
       image: cuaesd/aesd-autotest:24-unit-test
       volumes: 
-        - ~/myCert:/volume_mount
+        - /home/sherin/myCert:/volume_mount
     runs-on: self-hosted
     steps:
       - name: Add Root CA Certificate to Container
@@ -32,7 +32,7 @@ jobs:
     container: 
       image: cuaesd/aesd-autotest:24-unit-test
       volumes: 
-        - ~/myCert:/volume_mount
+        - /home/sherin/myCert:/volume_mount
     runs-on: self-hosted
     steps:
       - name: Add Root CA Certificate to Container
