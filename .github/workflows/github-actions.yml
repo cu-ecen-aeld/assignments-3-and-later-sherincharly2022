@@ -1,56 +1,75 @@
 name: assignment-test
+
 on:
     push:
         tags-ignore:
             - '*'
         branches:
             - 'assignment7-part1'
+
 jobs:
-    upload-cert:
+    unit-test:
+        container: cuaesd/aesd-autotest:24-unit-test
         runs-on: self-hosted
         steps:
-          - name: Upload Zscaler Root CA certificate
+          - uses: actions/checkout@v2
+
+          - name: Checkout submodules
+            run: git submodule update --init --recursive
+
+          - name: Upload Root CA Certificate
             uses: actions/upload-artifact@v2
             with:
               name: ZscalerRootCA
               path: ~/ZscalerRootCA.crt
 
-    unit-test:
-        needs: upload-cert
-        container: cuaesd/aesd-autotest:24-unit-test
-        runs-on: self-hosted
-        steps:
-          - name: Download Zscaler Root CA certificate
+          - name: Download Root CA Certificate
             uses: actions/download-artifact@v2
             with:
               name: ZscalerRootCA
-              path: ./ZscalerRootCA.crt
-          - name: Copy Zscaler Root CA certificate
+              path: ./certs
+
+          - name: Add Root CA Certificate
             run: |
-              sudo cp ./ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              sudo cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
               sudo update-ca-certificates
-          - uses: actions/checkout@v2
-          - name: Checkout submodules
-            run : git submodule update --init --recursive
+
+          - name: Verify Certificate Installation
+            run: |
+              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+
           - name: Run unit test
             run: ./unit-test.sh
 
     full-test:
-        needs: upload-cert
         container: cuaesd/aesd-autotest:24-assignment7
         runs-on: self-hosted
         steps:
-          - name: Download Zscaler Root CA certificate
+          - uses: actions/checkout@v2
+
+          - name: Checkout submodules
+            run: git submodule update --init --recursive
+
+          - name: Upload Root CA Certificate
+            uses: actions/upload-artifact@v2
+            with:
+              name: ZscalerRootCA
+              path: ~/ZscalerRootCA.crt
+
+          - name: Download Root CA Certificate
             uses: actions/download-artifact@v2
             with:
               name: ZscalerRootCA
-              path: ./ZscalerRootCA.crt
-          - name: Copy Zscaler Root CA certificate
+              path: ./certs
+
+          - name: Add Root CA Certificate
             run: |
-              sudo cp ./ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              sudo cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
               sudo update-ca-certificates
-          - uses: actions/checkout@v2
-          - name: Checkout submodules
-            run : git submodule update --init --recursive
+
+          - name: Verify Certificate Installation
+            run: |
+              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+
           - name: Run full test
             run: ./full-test.sh
