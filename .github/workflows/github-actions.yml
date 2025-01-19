@@ -1,49 +1,49 @@
 name: assignment-test
 
 on:
-    push:
-        tags-ignore:
-            - '*'
-        branches:
-            - 'assignment7-part1'
+  push:
+    tags-ignore:
+      - '*'
+    branches:
+      - 'assignment7-part1'
 
 jobs:
-    unit-test:
-        container: 
-            image: cuaesd/aesd-autotest:24-unit-test
-            volumes: 
-              - ~/myCert: /volume_mount
-        runs-on: self-hosted
-        steps:
-          - name: Add Root CA Certificate to Container
-            run: |
-              cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
-              update-ca-certificates
-          - name: Verify Certificate Installation in Container
-            run: |
-              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
-          - uses: actions/checkout@v2
-          - name: Checkout submodules
-            run: git submodule update --init --recursive
-          - name: Run unit test
-            run: ./unit-test.sh
+  unit-test:
+    container: 
+      image: cuaesd/aesd-autotest:24-unit-test
+      volumes: 
+        - ~/myCert:/volume_mount
+    runs-on: self-hosted
+    steps:
+      - name: Add Root CA Certificate to Container
+        run: |
+          cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+          update-ca-certificates
+      - name: Verify Certificate Installation in Container
+        run: |
+          ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+      - uses: actions/checkout@v3
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      - name: Run unit test
+        run: ./unit-test.sh
 
-    full-test:
-        container: 
-            image: cuaesd/aesd-autotest:24-unit-test
-            volumes: 
-              - ~/myCert: /volume_mount
-        runs-on: self-hosted
-        steps:
-          - name: Add Root CA Certificate to Container
-            run: |
-              cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
-              update-ca-certificates
-          - name: Verify Certificate Installation in Container
-            run: |
-              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
-          - uses: actions/checkout@v2
-          - name: Checkout submodules
-            run: git submodule update --init --recursive
-          - name: Run full test
-            run: ./full-test.sh
+  full-test:
+    container: 
+      image: cuaesd/aesd-autotest:24-unit-test
+      volumes: 
+        - ~/myCert:/volume_mount
+    runs-on: self-hosted
+    steps:
+      - name: Add Root CA Certificate to Container
+        run: |
+          cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+          update-ca-certificates
+      - name: Verify Certificate Installation in Container
+        run: |
+          ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+      - uses: actions/checkout@v3
+      - name: Checkout submodules
+        run: git submodule update --init --recursive
+      - name: Run full test
+        run: ./full-test.sh
