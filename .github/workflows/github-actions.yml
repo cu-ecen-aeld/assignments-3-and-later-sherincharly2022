@@ -8,28 +8,16 @@ on:
             - 'assignment7-part1'
 
 jobs:
-    upload-cert:
-        runs-on: self-hosted
-        steps:
-          - name: Upload Root CA Certificate
-            uses: actions/upload-artifact@v4
-            with:
-              name: ZscalerRootCA
-              path: ~/ZscalerRootCA.crt
-
     unit-test:
-        needs: upload-cert
-        container: cuaesd/aesd-autotest:24-unit-test
+        container: 
+            image: cuaesd/aesd-autotest:24-unit-test
+            volume: 
+              - ~/myCert: /volume_mount
         runs-on: self-hosted
         steps:
-          - name: Download Root CA Certificate
-            uses: actions/download-artifact@v4
-            with:
-              name: ZscalerRootCA
-              path: ./certs
           - name: Add Root CA Certificate to Container
             run: |
-              cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
               update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
@@ -41,18 +29,15 @@ jobs:
             run: ./unit-test.sh
 
     full-test:
-        needs: upload-cert
-        container: cuaesd/aesd-autotest:24-assignment7
+        container: 
+            image: cuaesd/aesd-autotest:24-unit-test
+            volume: 
+              - ~/myCert: /volume_mount
         runs-on: self-hosted
         steps:
-          - name: Download Root CA Certificate
-            uses: actions/download-artifact@v4
-            with:
-              name: ZscalerRootCA
-              path: ./certs
           - name: Add Root CA Certificate to Container
             run: |
-              cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              cp /volume_mount/ZscalerRootCA.crt /usr/local/share/ca-certificates/
               update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
