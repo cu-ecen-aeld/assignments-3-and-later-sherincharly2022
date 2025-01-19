@@ -14,11 +14,11 @@ jobs:
         steps:
           - name: Add Root CA Certificate to Container
             run: |
-              docker cp ~/ZscalerRootCA.crt $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test):/usr/local/share/ca-certificates/
-              docker exec $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) update-ca-certificates
+              /usr/bin/docker cp ~/ZscalerRootCA.crt $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test):/usr/local/share/ca-certificates/
+              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
-              docker exec $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run: git submodule update --init --recursive
@@ -31,11 +31,11 @@ jobs:
         steps:
           - name: Add Root CA Certificate to Container
             run: |
-              docker cp ~/ZscalerRootCA.crt $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7):/usr/local/share/ca-certificates/
-              docker exec $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) update-ca-certificates
+              /usr/bin/docker cp ~/ZscalerRootCA.crt $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7):/usr/local/share/ca-certificates/
+              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
-              docker exec $(docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run: git submodule update --init --recursive
