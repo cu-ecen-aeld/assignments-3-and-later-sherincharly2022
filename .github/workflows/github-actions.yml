@@ -8,17 +8,32 @@ on:
             - 'assignment7-part1'
 
 jobs:
+    upload-cert:
+        runs-on: self-hosted
+        steps:
+          - name: Upload Root CA Certificate
+            uses: actions/upload-artifact@v4
+            with:
+              name: ZscalerRootCA
+              path: ~/ZscalerRootCA.crt
+
     unit-test:
+        needs: upload-cert
         container: cuaesd/aesd-autotest:24-unit-test
         runs-on: self-hosted
         steps:
+          - name: Download Root CA Certificate
+            uses: actions/download-artifact@v4
+            with:
+              name: ZscalerRootCA
+              path: ./certs
           - name: Add Root CA Certificate to Container
             run: |
-              /usr/bin/docker cp ~/ZscalerRootCA.crt $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test):/usr/local/share/ca-certificates/
-              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) update-ca-certificates
+              cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
-              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-unit-test) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run: git submodule update --init --recursive
@@ -26,16 +41,22 @@ jobs:
             run: ./unit-test.sh
 
     full-test:
+        needs: upload-cert
         container: cuaesd/aesd-autotest:24-assignment7
         runs-on: self-hosted
         steps:
+          - name: Download Root CA Certificate
+            uses: actions/download-artifact@v4
+            with:
+              name: ZscalerRootCA
+              path: ./certs
           - name: Add Root CA Certificate to Container
             run: |
-              /usr/bin/docker cp ~/ZscalerRootCA.crt $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7):/usr/local/share/ca-certificates/
-              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) update-ca-certificates
+              cp ./certs/ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              update-ca-certificates
           - name: Verify Certificate Installation in Container
             run: |
-              /usr/bin/docker exec $(/usr/bin/docker ps -q -f ancestor=cuaesd/aesd-autotest:24-assignment7) ls -l /etc/ssl/certs | grep "ZscalerRootCA"
+              ls -l /etc/ssl/certs | grep "ZscalerRootCA"
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run: git submodule update --init --recursive
