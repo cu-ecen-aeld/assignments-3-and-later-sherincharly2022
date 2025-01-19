@@ -6,7 +6,7 @@ on:
         branches:
             - 'assignment7-part1'
 jobs:
-    setup-cert:
+    upload-cert:
         runs-on: self-hosted
         steps:
           - name: Upload Zscaler Root CA certificate
@@ -14,6 +14,12 @@ jobs:
             with:
               name: ZscalerRootCA
               path: ~/ZscalerRootCA.crt
+
+    unit-test:
+        needs: upload-cert
+        container: cuaesd/aesd-autotest:24-unit-test
+        runs-on: self-hosted
+        steps:
           - name: Download Zscaler Root CA certificate
             uses: actions/download-artifact@v2
             with:
@@ -23,12 +29,6 @@ jobs:
             run: |
               sudo cp ./ZscalerRootCA.crt /usr/local/share/ca-certificates/
               sudo update-ca-certificates
-
-    unit-test:
-        needs: setup-cert
-        container: cuaesd/aesd-autotest:24-unit-test
-        runs-on: self-hosted
-        steps:
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run : git submodule update --init --recursive
@@ -36,10 +36,19 @@ jobs:
             run: ./unit-test.sh
 
     full-test:
-        needs: setup-cert
+        needs: upload-cert
         container: cuaesd/aesd-autotest:24-assignment7
         runs-on: self-hosted
         steps:
+          - name: Download Zscaler Root CA certificate
+            uses: actions/download-artifact@v2
+            with:
+              name: ZscalerRootCA
+              path: ./ZscalerRootCA.crt
+          - name: Copy Zscaler Root CA certificate
+            run: |
+              sudo cp ./ZscalerRootCA.crt /usr/local/share/ca-certificates/
+              sudo update-ca-certificates
           - uses: actions/checkout@v2
           - name: Checkout submodules
             run : git submodule update --init --recursive
