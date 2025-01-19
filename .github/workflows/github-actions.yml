@@ -11,7 +11,7 @@ jobs:
     unit-test:
         container: 
             image: cuaesd/aesd-autotest:24-unit-test
-            volume: 
+            volumes: 
               - ~/myCert: /volume_mount
         runs-on: self-hosted
         steps:
@@ -31,7 +31,7 @@ jobs:
     full-test:
         container: 
             image: cuaesd/aesd-autotest:24-unit-test
-            volume: 
+            volumes: 
               - ~/myCert: /volume_mount
         runs-on: self-hosted
         steps:
