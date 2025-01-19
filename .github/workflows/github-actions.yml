@@ -18,13 +18,13 @@ jobs:
             run: git submodule update --init --recursive
 
           - name: Upload Root CA Certificate
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: ZscalerRootCA
               path: ~/ZscalerRootCA.crt
 
           - name: Download Root CA Certificate
-            uses: actions/download-artifact@v2
+            uses: actions/download-artifact@v4
             with:
               name: ZscalerRootCA
               path: ./certs
@@ -51,13 +51,13 @@ jobs:
             run: git submodule update --init --recursive
 
           - name: Upload Root CA Certificate
-            uses: actions/upload-artifact@v2
+            uses: actions/upload-artifact@v4
             with:
               name: ZscalerRootCA
               path: ~/ZscalerRootCA.crt
 
           - name: Download Root CA Certificate
-            uses: actions/download-artifact@v2
+            uses: actions/download-artifact@v4
             with:
               name: ZscalerRootCA
               path: ./certs
